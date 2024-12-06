@@ -1,12 +1,25 @@
- import { NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
+import { NextResponse } from 'next/server'
+
+let Groq;
+try {
+  Groq = require('groq-sdk').default;
+} catch (error) {
+  console.error('Failed to load groq-sdk:', error);
+}
 
 // Initialize the Groq client
-const groq = new Groq({
+const groq = Groq ? new Groq({
   apiKey: process.env.GROQ_API_KEY
-})
+}) : null;
 
 export async function POST(request: Request) {
+  if (!groq) {
+    return NextResponse.json({ 
+      error: 'Groq SDK not initialized',
+      details: 'The Groq SDK failed to initialize. Please check the server configuration.'
+    }, { status: 500 });
+  }
+
   try {
     // Parse the incoming request body
     const { transcript } = await request.json()
@@ -48,7 +61,7 @@ ${transcript}`
     console.error('Error processing transcript:', error)
     
     // Determine if it's a Groq API error
-    if (error instanceof Groq.APIError) {
+    if (error instanceof Error && error.name === 'GroqAPIError') {
       return NextResponse.json({ 
         error: 'Groq API error', 
         details: error.message 
