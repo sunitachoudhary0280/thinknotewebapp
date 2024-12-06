@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Mic, Brain, Zap, Clock, Lock, Layers, Search, Smartphone, Save, Send, Menu, X, Check, Twitter, Facebook, Instagram, Linkedin } from "lucide-react"
+import { Mic, Brain, Zap, Clock, Lock, Layers, Search, Smartphone, Save, Send, Menu, X, Check, Twitter, Facebook, Instagram, Linkedin } from 'lucide-react'
+
+// Add this type definition
+type SpeechRecognition = any;
 
 export default function ThinkNoteWebsite() {
   const [isRecording1, setIsRecording1] = useState(false)
@@ -25,37 +28,42 @@ export default function ThinkNoteWebsite() {
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
-      recognitionRef1.current = new SpeechRecognitionAPI()
-      recognitionRef1.current.continuous = true
-      recognitionRef1.current.interimResults = true
-
-      recognitionRef1.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = ''
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + ' '
+    if (typeof window !== 'undefined') {
+      const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      if (SpeechRecognitionAPI) {
+        recognitionRef1.current = new SpeechRecognitionAPI()
+        recognitionRef2.current = new SpeechRecognitionAPI()
+        
+        if (recognitionRef1.current) {
+          recognitionRef1.current.continuous = true
+          recognitionRef1.current.interimResults = true
+          recognitionRef1.current.onresult = (event: any) => {
+            let finalTranscript = ''
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript + ' '
+              }
+            }
+            if (finalTranscript) {
+              setTranscript1(prevTranscript => prevTranscript + finalTranscript)
+            }
           }
         }
-        if (finalTranscript) {
-          setTranscript1(prevTranscript => prevTranscript + finalTranscript)
-        }
-      }
-
-      recognitionRef2.current = new SpeechRecognitionAPI()
-      recognitionRef2.current.continuous = true
-      recognitionRef2.current.interimResults = true
-
-      recognitionRef2.current.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = ''
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + ' '
+        
+        if (recognitionRef2.current) {
+          recognitionRef2.current.continuous = true
+          recognitionRef2.current.interimResults = true
+          recognitionRef2.current.onresult = (event: any) => {
+            let finalTranscript = ''
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript + ' '
+              }
+            }
+            if (finalTranscript) {
+              setTranscript2(prevTranscript => prevTranscript + finalTranscript)
+            }
           }
-        }
-        if (finalTranscript) {
-          setTranscript2(prevTranscript => prevTranscript + finalTranscript)
         }
       }
     }
@@ -493,3 +501,4 @@ export default function ThinkNoteWebsite() {
     </div>
   )
 }
+
