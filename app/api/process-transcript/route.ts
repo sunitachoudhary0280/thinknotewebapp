@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+ import { NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 
 // Initialize the Groq client
@@ -21,11 +21,11 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "system",
-          content: "You are an AI assistant specialized in analyzing transcripts. Provide concise and insightful ."
+          content: "You are an AI assistant specialized in analyzing transcripts. Provide concise and insightful summaries."
         },
         {
           role: "user",
-          content: `Please highlight key points and give answer benetif if user want'
+          content: `Please highlight key points and give answer benefits if user wants:
 
 ${transcript}`
         }
@@ -62,3 +62,4 @@ ${transcript}`
     }, { status: 500 })
   }
 }
+
