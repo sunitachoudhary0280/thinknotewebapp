@@ -1,5 +1,0 @@
-{
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/process-transcript/route": "app/api/process-transcript/route.js",
-  "/page": "app/page.js"
-}
