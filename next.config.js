@@ -19,7 +19,13 @@ const nextConfig = {
     }
     return config;
   },
+  // Add these lines
+  experimental: {
+    appDir: true,
+  },
+  output: 'standalone',
 }
 
 module.exports = nextConfig
+
 
