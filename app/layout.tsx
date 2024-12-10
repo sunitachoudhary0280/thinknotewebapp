@@ -7,15 +7,21 @@ const geistSans = localFont({
   src: "./fonts/GeistVF.woff2",
   variable: "--font-geist-sans",
   weight: "100 900",
+  display: "swap",
 });
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff2",
   variable: "--font-geist-mono",
   weight: "100 900",
+  display: "swap",
 });
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: 'ThinkNote',
@@ -28,8 +34,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className={`${inter.className} font-sans`}>{children}</body>
+    <html lang="en" className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${inter.className} font-sans antialiased`}>
+        {children}
+      </body>
     </html>
   )
 }
